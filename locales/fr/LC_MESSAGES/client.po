@@ -1,0 +1,239 @@
+# This a translation for client module of syuppod
+# Copyright (C) 2019 Venturi Jérôme <jerome.venturi@gmail.com>
+# This file is distributed under the same license as the syuppod package (GNU GPL V3 or above).
+# Venturi Jerome, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: client version git\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-06 14:28+0200\n"
+"Last-Translator: Venturi Jérôme <jerome.venturi@gmail.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: portageclient.py:20
+msgid "Success"
+msgstr "Accomplie avec succès"
+
+#: portageclient.py:21
+msgid "Failed"
+msgstr "Echouée"
+
+#: portageclient.py:24
+msgid "Last state of the repositories syncronizer:"
+msgstr "Etat de la dernière synchronisation:"
+
+#: portageclient.py:60
+msgid "Session"
+msgstr "Session"
+
+#: portageclient.py:61
+msgid "Overall"
+msgstr "Globale"
+
+#: portageclient.py:64
+msgid "The repositories syncronizer run successfully:"
+msgstr "Synchronisation accomplie avec succès:"
+
+#: portageclient.py:71
+msgid "time"
+msgstr "fois"
+
+#: portageclient.py:73
+msgid "times"
+msgstr "fois"
+
+#: portageclient.py:90
+msgid "seconds since epoch (unix / posix time)"
+msgstr "secondes depuis epoch (temps unix / posix)"
+
+#: portageclient.py:93
+msgid "The "
+msgstr "Le "
+
+#: portageclient.py:99
+msgid "There is "
+msgstr "Il y a "
+
+#: portageclient.py:100
+msgid "ago"
+msgstr ""
+
+#: portageclient.py:103
+msgid "Last repositories synchronization:"
+msgstr "Dernière synchronisation effectuée:"
+
+#: portageclient.py:124 portageclient.py:146
+msgid "seconds"
+msgstr "secondes"
+
+#: portageclient.py:128
+msgid "Current repositories synchronization interval:"
+msgstr "Intervalle de synchronisation:"
+
+#: portageclient.py:140
+msgid "Current repositories synchronization elapsed time:"
+msgstr "Temps écoulé depuis la dernière synchronisation:"
+
+#: portageclient.py:141
+msgid "Current repositories synchronization remain time:"
+msgstr "Temps restant avant la prochaine synchronisation:"
+
+#: portageclient.py:165
+msgid "Portage package update status:"
+msgstr "Mise à jour du packet portage:"
+
+#: portageclient.py:169
+msgid "Available"
+msgstr "Disponible"
+
+#: portageclient.py:171
+msgid "Not available"
+msgstr "Non disponible"
+
+#: portageclient.py:175
+msgid "Available portage package update, version:"
+msgstr "Version de la mise à jour du packet portage:"
+
+#: portageclient.py:182
+#, python-brace-format
+msgid "Available (from {0} to {1})"
+msgstr "Disponible (depuis {0} vers {1})"
+
+#: portageclient.py:184
+#, python-brace-format
+msgid "Not available ({0})"
+msgstr "Non disponible ({0})"
+
+#: portageclient.py:196 portageclient.py:221
+msgid "None"
+msgstr "Aucun"
+
+#: portageclient.py:200
+msgid "Available packages to update:"
+msgstr "Packets disposant d'une mise à jour:"
+
+#: portageclient.py:214
+msgid "Last world update state:"
+msgstr "Etat de la dernière mise à jour globale:"
+
+#: portageclient.py:217
+msgid "Last world update packages:"
+msgstr "Packets mis à jour lors de la dernière mise à jour globale:"
+
+#: portageclient.py:222
+msgid "Last world update failed package:"
+msgstr "Packets ayant échoués durant la dernière mise à jour globale:"
+
+#: portageclient.py:225
+msgid "Last world update failed packages:"
+msgstr "Packets ayant échoués durant la dernière mise à jour globale:"
+
+#: portageclient.py:228 portageclient.py:232
+#, python-brace-format
+msgid "The {0}"
+msgstr "Le {0}"
+
+#: portageclient.py:229
+msgid "Last world update started:"
+msgstr "La dernière mise à jour globale a été lancé:"
+
+#: portageclient.py:233
+msgid "Last world update stoped:"
+msgstr "La dernière mise à jour globale s'est terminée:"
+
+#: portageclient.py:238
+#, python-brace-format
+msgid "There is {0} ago"
+msgstr "Il y a {0}"
+
+#: portageclient.py:239
+msgid "Last world update finished:"
+msgstr "La dernière mise à jour globale s'est terminée:"
+
+#: portageclient.py:245
+msgid "Last world update lasted:"
+msgstr "La dernière mise à jour globale a duré:"
+
+#: portageclient.py:283
+msgid "Sync is in progress, abording..."
+msgstr "L'action à été annulée car la synchronisation est en cours..."
+
+#: portageclient.py:284
+msgid "Global update is in progress, abording..."
+msgstr "L'action a été annulée car la mise à jour globale est en cours..."
+
+#: portageclient.py:285
+msgid "Recompute already in progress, abording..."
+msgstr "L'action est déjà en cours..."
+
+#: portageclient.py:286
+#, python-brace-format
+msgid "Recompute have just been completed {0} ago.\n"
+msgstr "Le recalcul a été lancé il y a à peine {0}.\n"
+
+#: portageclient.py:287
+#, python-brace-format
+msgid "{0}You have to wait "
+msgstr "{0}Vous devez attendre encore "
+
+#: portageclient.py:288
+#, python-brace-format
+msgid "{0} before you can run it again."
+msgstr "{0} avant de pouvoir relancer le processus."
+
+#: portageclient.py:289
+#, python-brace-format
+msgid "Order has been sent, see {0} for more details."
+msgstr "L'ordre à été envoyé, lisez {0} pour plus de détails."
+
+#: portageclient.py:293
+msgid "Force recompute available update packages:"
+msgstr "Force le recalcul du nombre de packets à mettre à jour:"
+
+#: gitclient.py:16
+msgid "Available git branch version:"
+msgstr "Branche git disposant d'une mise à jour:"
+
+#: gitclient.py:17 gitclient.py:22
+msgid "not available"
+msgstr "Non disponible"
+
+#: gitclient.py:21
+msgid "Available git kernel version:"
+msgstr "Kernel git disposant d'une mise à jour:"
+
+#: gitclient.py:48
+msgid "Done."
+msgstr "Effectué."
+
+#: gitclient.py:49
+msgid "No error found."
+msgstr "Aucune erreur trouvée."
+
+#: gitclient.py:50
+msgid "Found a network error which is not blocking."
+msgstr "Une erreur reseau a été trouvée, elle ne bloque pas le processus de mise à jour."
+
+#: gitclient.py:51
+msgid "Git pull is running, skipping..."
+msgstr "Le processus de mise à jour est en cours..."
+
+#~ msgid "In Progress"
+#~ msgstr "En cours"
+
+#~ msgid "Finish"
+#~ msgstr "Terminer"
+
+#~ msgid "Current status of the repositories syncronizer:"
+#~ msgstr "Etat du processus de synchronisation:"
+
+#~ msgid "Current error count for the repositories syncronizer:"
+#~ msgstr "Nombre d'erreur de synchronisation:"
+
+#~ msgid "Forcing recalculation of the packages informations:"
+#~ msgstr "Force le recalcul des informations sur les packets:"

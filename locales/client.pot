@@ -1,0 +1,226 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-06 14:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: portageclient.py:20
+msgid "Success"
+msgstr ""
+
+#: portageclient.py:21
+msgid "Failed"
+msgstr ""
+
+#: portageclient.py:24
+msgid "Last state of the repositories syncronizer:"
+msgstr ""
+
+#: portageclient.py:60
+msgid "Session"
+msgstr ""
+
+#: portageclient.py:61
+msgid "Overall"
+msgstr ""
+
+#: portageclient.py:64
+msgid "The repositories syncronizer run successfully:"
+msgstr ""
+
+#: portageclient.py:71
+msgid "time"
+msgstr ""
+
+#: portageclient.py:73
+msgid "times"
+msgstr ""
+
+#: portageclient.py:90
+msgid "seconds since epoch (unix / posix time)"
+msgstr ""
+
+#: portageclient.py:93
+msgid "The "
+msgstr ""
+
+#: portageclient.py:99
+msgid "There is "
+msgstr ""
+
+#: portageclient.py:100
+msgid "ago"
+msgstr ""
+
+#: portageclient.py:103
+msgid "Last repositories synchronization:"
+msgstr ""
+
+#: portageclient.py:124 portageclient.py:146
+msgid "seconds"
+msgstr ""
+
+#: portageclient.py:128
+msgid "Current repositories synchronization interval:"
+msgstr ""
+
+#: portageclient.py:140
+msgid "Current repositories synchronization elapsed time:"
+msgstr ""
+
+#: portageclient.py:141
+msgid "Current repositories synchronization remain time:"
+msgstr ""
+
+#: portageclient.py:165
+msgid "Portage package update status:"
+msgstr ""
+
+#: portageclient.py:169
+msgid "Available"
+msgstr ""
+
+#: portageclient.py:171
+msgid "Not available"
+msgstr ""
+
+#: portageclient.py:175
+msgid "Available portage package update, version:"
+msgstr ""
+
+#: portageclient.py:182
+#, python-brace-format
+msgid "Available (from {0} to {1})"
+msgstr ""
+
+#: portageclient.py:184
+#, python-brace-format
+msgid "Not available ({0})"
+msgstr ""
+
+#: portageclient.py:196 portageclient.py:221
+msgid "None"
+msgstr ""
+
+#: portageclient.py:200
+msgid "Available packages to update:"
+msgstr ""
+
+#: portageclient.py:214
+msgid "Last world update state:"
+msgstr ""
+
+#: portageclient.py:217
+msgid "Last world update packages:"
+msgstr ""
+
+#: portageclient.py:222
+msgid "Last world update failed package:"
+msgstr ""
+
+#: portageclient.py:225
+msgid "Last world update failed packages:"
+msgstr ""
+
+#: portageclient.py:228 portageclient.py:232
+#, python-brace-format
+msgid "The {0}"
+msgstr ""
+
+#: portageclient.py:229
+msgid "Last world update started:"
+msgstr ""
+
+#: portageclient.py:233
+msgid "Last world update stoped:"
+msgstr ""
+
+#: portageclient.py:238
+#, python-brace-format
+msgid "There is {0} ago"
+msgstr ""
+
+#: portageclient.py:239
+msgid "Last world update finished:"
+msgstr ""
+
+#: portageclient.py:245
+msgid "Last world update lasted:"
+msgstr ""
+
+#: portageclient.py:283
+msgid "Sync is in progress, abording..."
+msgstr ""
+
+#: portageclient.py:284
+msgid "Global update is in progress, abording..."
+msgstr ""
+
+#: portageclient.py:285
+msgid "Recompute already in progress, abording..."
+msgstr ""
+
+#: portageclient.py:286
+#, python-brace-format
+msgid "Recompute have just been completed {0} ago.\n"
+msgstr ""
+
+#: portageclient.py:287
+#, python-brace-format
+msgid "{0}You have to wait "
+msgstr ""
+
+#: portageclient.py:288
+#, python-brace-format
+msgid "{0} before you can run it again."
+msgstr ""
+
+#: portageclient.py:289
+#, python-brace-format
+msgid "Order has been sent, see {0} for more details."
+msgstr ""
+
+#: portageclient.py:293
+msgid "Force recompute available update packages:"
+msgstr ""
+
+#: gitclient.py:16
+msgid "Available git branch version:"
+msgstr ""
+
+#: gitclient.py:17 gitclient.py:22
+msgid "not available"
+msgstr ""
+
+#: gitclient.py:21
+msgid "Available git kernel version:"
+msgstr ""
+
+#: gitclient.py:48
+msgid "Done."
+msgstr ""
+
+#: gitclient.py:49
+msgid "No error found."
+msgstr ""
+
+#: gitclient.py:50
+msgid "Found a network error which is not blocking."
+msgstr ""
+
+#: gitclient.py:51
+msgid "Git pull is running, skipping..."
+msgstr ""
