@@ -13,8 +13,8 @@ import pathlib
 import re
 
 from argsparser import ClientParserHandler
-from utils import _format_date
-from utils import _format_timestamp
+from lib.utils import _format_date
+from lib.utils import _format_timestamp
 
 try:
     from pydbus import SystemBus
