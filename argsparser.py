@@ -113,7 +113,7 @@ class DaemonParserHandler(CustomArgsCheck):
         git_arg.add_argument('-p', 
                         '--pull', 
                         help = 'pull interval. Where \'int\' should be this form: 1w = 1 week, 1d = 1 day and 1h = 1 hour. Can be add together, for exemple: 2w1d12h, 2d1h... Minimum and default are 1d (1 day).',
-                        default = 604800,
+                        default = 86400,
                         type=self._check_args_interval,
                         metavar = 'int')
         # Advanced debug options
