@@ -15,14 +15,18 @@ from gitmanager import check_git_dir
 #       --count : this can be both|session|overall -> for both you could write 'b' or 'bo' or 'bot' or ...
 
 class CustomArgsCheck:
-    """Advanced arguments checker which implant specific parsing"""
+    """
+    Advanced arguments checker which implant specific parsing
+    """
     def __init__(self):
         # this is shared across method
         self.shared_timestamp = '(?:\:r|\:u)?(?:\:[1-5])?'
         self.shared_date = '(?:\:s|\:m|\:l|\:f)?'
     
     def _check_args_interval(self, interval):
-        """Checking interval typo and converting to seconds"""
+        """
+        Checking interval typo and converting to seconds
+        """
         # By pass to implant ClientParserHandler args parse 
         if 'display' in interval:
             pattern = re.compile(r'^display(?:\:r|\:u|\:seconds)?(?:\:[1-5])?$')
@@ -51,16 +55,22 @@ class CustomArgsCheck:
             self.parser.error(f'Interval \'{interval}\' too small: minimum is 24 hours / 1 day !')
         return converted
         
-    def _check_args_git(self):
-        """Checking git directory args"""
-        mygitdir = check_git_dir(self.args.repo)
+    def _check_args_git(self, repo):
+        """
+        Checking if repo is a valid git repo 
+        """
+        mygitdir = check_git_dir(repo)
         if not mygitdir[0]:
             if mygitdir[1] == 'dir':
-                self.parser.error(f'\'{self.args.repo}\' is not a valid path !')
+                self.parser.error(f'\'{repo}\' is not a valid path !')
             elif mygitdir[1] == 'read':
-                self.parser.error(f'\'{self.args.repo}\' is not a readable dir !')
+                self.parser.error(f'\'{repo}\' is not a readable dir !')
             elif mygitdir[1] == 'git':
-                self.parser.error(f'\'{self.args.repo}\' is not a valid git repo !')
+                self.parser.error(f'\'{repo}\' is not a valid git repo !')
+        # Make sure we have an '/' at the end
+        repo = repo.rstrip('/') 
+        repo = f'{repo}/'
+        return repo
 
 
 class DaemonParserHandler(CustomArgsCheck):
@@ -97,7 +107,8 @@ class DaemonParserHandler(CustomArgsCheck):
         git_arg.add_argument('-r', 
                         '--repo', 
                         help = 'specify git kernel \'dir\' (default=\'/usr/src/linux\').',
-                        default = '/usr/src/linux', 
+                        default = '/usr/src/linux',
+                        type=self._check_args_git,
                         metavar = 'dir')
         git_arg.add_argument('-p', 
                         '--pull', 
