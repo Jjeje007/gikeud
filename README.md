@@ -28,9 +28,9 @@ whatever program (as long as it use dbus or gikeud-cli output).
 
 ## Installation / Usage
 
-1. Clone the repo (--recursive because it have shared libs):
+1. Clone the repo:
 ```bash
-git clone --recursive https://github.com/Jjeje007/gikeud.git
+git clone https://github.com/Jjeje007/gikeud.git
 ```
 2. Copy the dbus configuration file to authorize dbus request:
 ```bash
@@ -68,26 +68,21 @@ cp init /etc/init.d/gikeud
 ### About logs and debug
 
 Daemon have several logs all located in /var/log/gikeud/\
-If you have troubles, check first /var/log/gikeud/stderr.log and /var/log/gikeud/debug.log (if debug is enable: -d)\
-But the best way, is running by hand in a terminal (so not using /etc/init.d/).
+
+Starting with git commit id: 74a72c2699a6fa33a9a5c5af58ace8700fd1a14b, new logging process have been added
+to catch almost all error when running daemon in init mode (/etc/init.d/gikeud start). Unfortunately, 
+it introduce a more complex log flow. The earliest errors are redirect to syslog first. So if you encounter
+any issues you should first check /var/log/messages. Then: /var/log/gikeud/stderr.log and /var/log/gikeud/debug.log
+(if debug is enable: -d). 
+
+Running by hand in a terminal (so not using /etc/init.d/) is really intend to be a one shot test or for debugging.
+You have to note that there is also a debugging option: --fakeinit which mimic init process (so you won't get any output
+in terminal).
 
 Daemon and terminal mode write pull log to:\
 /var/log/gikeud/git.log
 
 All logs are autorotate.
-
-### About shared libs
-
-This project use shared libs from git submodule. If you want to automatically pull submodule
-when you run 'git pull' in git's folder project then you should run:
-```bash
-git config --global submodule.recurse true
-```
-to enable it globally. Or use:
-```bash
-git pull --recurse-submodules
-```
-each time.
 
 ## Developpement Status
 
