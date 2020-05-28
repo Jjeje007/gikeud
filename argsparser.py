@@ -112,10 +112,17 @@ class DaemonParserHandler(CustomArgsCheck):
                         metavar = 'dir')
         git_arg.add_argument('-p', 
                         '--pull', 
-                        help = 'pull interval. Where \'int\' should be this form: 1w = 1 week, 1d = 1 day and 1h = 1 hour. Can be add together, for exemple: 2w1d12h, 2d1h... Minimum is 1d (1 day) and default is 1d (1 day).',
+                        help = 'pull interval. Where \'int\' should be this form: 1w = 1 week, 1d = 1 day and 1h = 1 hour. Can be add together, for exemple: 2w1d12h, 2d1h... Minimum and default are 1d (1 day).',
                         default = 604800,
                         type=self._check_args_interval,
                         metavar = 'int')
+        # Advanced debug options
+        advanced_debug = self.parser.add_argument_group('<advanced debug options>')
+        advanced_debug.add_argument('-f',
+                                    '--fakeinit',
+                                    help = 'Debugging init crash. Start daemon like it\'s started by running'
+                                            + ' /etc/init.d/syuppod/ start. So this is only usefull if start from terminal.',
+                                    action = 'store_true')
     def parsing(self):
         self.args = self.parser.parse_args()
         return self.args

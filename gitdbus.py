@@ -5,9 +5,7 @@
 
 import sys
 from gitmanager import GitHandler
-from lib.logger import MainLoggingHandler
-
-# pydbus is loaded from main 
+import logging
 
 # TODO try to return list / dict over str ?? 
 
@@ -41,25 +39,20 @@ class GitDbus(GitHandler):
         # better to have a separate logger
         # Don't override self.logger_name from GitHandler
         self.named_logger = f'::{__name__}::GitDbus::'
-        # pathdir is unpack from kwargs in GitHandler
-        gitdbus_logger = MainLoggingHandler(self.named_logger, self.pathdir['prog_name'], 
-                                        self.pathdir['debuglog'], self.pathdir['fdlog'])
-        # Don't override self.logger from gitmanager -> GitHandler
-        self.gdb_logger = getattr(gitdbus_logger, kwargs['runlevel'])()
-        self.gdb_logger.setLevel(kwargs['loglevel'])
+        logger = logging.getLogger(f'{self.named_logger}init::')
     
 
     def get_kernel_attributes(self, key, subkey):
         """
         Retrieve specific kernel attribute and return through dbus
         """
-        self.gdb_logger.name = f'{self.named_logger}get_kernel_attributes::'
-        self.gdb_logger.debug(f'Requesting: {key} | {subkey}')
+        logger = logging.getLogger(f'{self.named_logger}get_kernel_attributes::')
+        logger.debug(f'Requesting: {key} | {subkey}')
         
         if subkey == 'None':
-            self.gdb_logger.debug('Returning: {0} (as string).'.format(' '.join(self.kernel[key])))
+            logger.debug('Returning: {0} (as string).'.format(' '.join(self.kernel[key])))
             return str(' '.join(self.kernel[key]))
-        self.gdb_logger.debug('Returning: {0} (as string).'.format(' '.join(self.kernel[key][subkey])))
+        logger.debug('Returning: {0} (as string).'.format(' '.join(self.kernel[key][subkey])))
         return str(' '.join(self.kernel[key][subkey]))
     
 
@@ -67,13 +60,13 @@ class GitDbus(GitHandler):
         """
         Retrieve specific branch attribute and return through dbus
         """
-        self.gdb_logger.name = f'{self.named_logger}get_branch_attributes::'
-        self.gdb_logger.debug(f'Requesting: {key} | {subkey}')
+        logger = logging.getLogger(f'{self.named_logger}get_branch_attributes::')
+        logger.debug(f'Requesting: {key} | {subkey}')
         
         if subkey == 'None':
-            self.gdb_logger.debug('Returning: {0} (as string).'.format(' '.join(self.branch[key])))
+            logger.debug('Returning: {0} (as string).'.format(' '.join(self.branch[key])))
             return str(' '.join(self.branch[key]))
-        self.gdb_logger.debug('Returning: {0} (as string).'.format(' '.join(self.branch[key][subkey])))
+        logger.debug('Returning: {0} (as string).'.format(' '.join(self.branch[key][subkey])))
         return str(' '.join(self.branch[key][subkey]))
     
 
@@ -81,32 +74,32 @@ class GitDbus(GitHandler):
         """
         Reset pull error and forced pull
         """
-        self.gdb_logger.name = f'{self.named_logger}reset_pull_error::'
-        self.gdb_logger.debug('Got request.')
+        logger = logging.getLogger(f'{self.named_logger}reset_pull_error::')
+        logger.debug('Got request.')
         
         if self.pull['status']:
-            self.gdb_logger.debug('Failed: already running (internal).')
+            logger.debug('Failed: already running (internal).')
             return 'running'
         
         #if not self.pull_state == 'disabled':
         if self.pull_state:
-            self.gdb_logger.debug('Failed: already running (external).')
+            logger.debug('Failed: already running (external).')
             return 'running'
         #else:
-            #self.gdb_logger.debug('External git pull running checker is disabled.')
+            #logger.debug('External git pull running checker is disabled.')
             # don't return 'running' as we don't know state so just pass to next
         
         if not self.pull['state'] == 'Failed':
-            self.gdb_logger.debug('Failed: no error found.')
+            logger.debug('Failed: no error found.')
             return 'no_error'
         
         if self.pull['state'] == 'Failed' and self.pull['network_error']:
-            self.gdb_logger.debug('Failed: network related error.')
+            logger.debug('Failed: network related error.')
             return 'network'
         
         # Ok everything should be good ;)
-        self.gdb_logger.debug('Succeed: error reseted.')
-        self.logger.warning('Resetting pull error as requested by dbus client.')
+        logger.debug('Succeed: error reseted.')
+        logger.warning('Resetting pull error as requested by dbus client.')
         self.pull['state'] = 'Success'
         self.stateinfo.save('pull state', 'pull state: Success')
         return 'done'

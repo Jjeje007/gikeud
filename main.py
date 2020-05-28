@@ -7,37 +7,10 @@
 # Copyright © 2019,2020: Venturi Jérôme : jerome dot Venturi at gmail dot com
 # Distributed under the terms of the GNU General Public License v3
 
-import sys
-import os
-import argparse
-import pathlib
-import time
-import re
-import errno
-import asyncio
-import threading
-
-from gitdbus import GitDbus
-from gitmanager import check_git_dir
-from gitmanager import GitWatcher
-from lib.logger import MainLoggingHandler
-from lib.logger import RedirectFdToLogger
-from argsparser import DaemonParserHandler
-
 
 # TODO TODO TODO don't run as root ! investigate !
 # TODO : exit gracefully 
 # TODO : debug log level !
-# TODO threading we cannot share object attribute 
-#       or it will no be update ?!?
-
-try:
-    from gi.repository import GLib
-    from pydbus import SystemBus
-except Exception as exc:
-    print(f'Error: unexcept error while loading dbus bindings: {exc}', file=sys.stderr)
-    print('Error: exiting with status \'1\'.', file=sys.stderr)
-    sys.exit(1)
 
 __version__ = "dev"
 prog_name = 'gikeud'  
@@ -53,14 +26,81 @@ pathdir = {
     'gitlog'        :   '/var/log/' + prog_name + '/git.log'
     }
 
+# Default basic logging, this will handle earlier error when
+# daemon is run using /etc/init.d/
+# It will be re-config when all module will be loaded
+import sys
+import logging
+# Custom level name share across all logger
+logging.addLevelName(logging.CRITICAL, '[Crit ]')
+logging.addLevelName(logging.ERROR,    '[Error]')
+logging.addLevelName(logging.WARNING,  '[Warn ]')
+logging.addLevelName(logging.INFO,     '[Info ]')
+logging.addLevelName(logging.DEBUG,    '[Debug]')
+
+if not sys.stdout.isatty() or '--fakeinit' in sys.argv\
+   or '-f' in sys.argv:
+    if '--fakeinit' in sys.argv or '-f' in sys.argv:
+        print('Running fake init.', file=sys.stderr)
+    # Get RootLogger 
+    root_logger = logging.getLogger()
+    # So redirect stderr to syslog (for the moment)
+    from lib.logger import RedirectFdToLogger
+    from lib.logger import LogErrorFilter
+    from lib.logger import LogLevelFilter
+    fd_handler_syslog = logging.handlers.SysLogHandler(address='/dev/log',facility='daemon')
+    fd_formatter_syslog = logging.Formatter('{0} %(levelname)s  %(message)s'.format(prog_name))
+    fd_handler_syslog.setFormatter(fd_formatter_syslog)
+    fd_handler_syslog.setLevel(40)
+    root_logger.addHandler(fd_handler_syslog)
+    fd2 = RedirectFdToLogger(root_logger)
+    sys.stderr = fd2
+    display_init_tty = 'Log are located to {0}'.format(pathdir['debuglog'])
+else:
+    # import here what is necessary to handle logging when 
+    # running in a terminal
+    from lib.logger import LogLevelFormatter
+    display_init_tty = ''
+
+import argparse
+import pathlib
+import time
+import re
+import errno
+import asyncio
+import threading
+
+from gitdbus import GitDbus
+from gitmanager import check_git_dir
+from gitmanager import GitWatcher
+from argsparser import DaemonParserHandler
+
+try:
+    from gi.repository import GLib
+    from pydbus import SystemBus
+except Exception as exc:
+    print(f'Error: unexcept error while loading dbus bindings: {exc}', file=sys.stderr)
+    print('Error: exiting with status \'1\'.', file=sys.stderr)
+    sys.exit(1)
+
+
+
 class MainDaemon(threading.Thread):
     def __init__(self, mygit, *args, **kwargs):
+        self.logger_name = f'::{__name__}::MainDaemonThread::'
+        logger = logging.getLogger(f'{self.logger_name}init::')
         super().__init__(*args, **kwargs)
         self.mygit = mygit
         # Init asyncio loop
         self.scheduler = asyncio.new_event_loop()
+        # TEST Change te log level of asyncio 
+        # to be the same as RootLogger
+        currentlevel = logger.getEffectiveLevel()
+        logger.debug(f'Setting log level for asyncio to: {currentlevel}')
+        logging.getLogger('asyncio').setLevel(currentlevel)
     
     def run(self):
+        logger = logging.getLogger(f'{self.logger_name}run::')
         logger.info('Start up completed.')
         while True:
             # TEST workaround but it have more latency 
@@ -168,35 +208,19 @@ class MainDaemon(threading.Thread):
 
 
 def main():
-    """Main init"""
+    """
+    Main init
+    """
     
-    # Check or create basedir and logdir directories
-    for directory in 'basedir', 'logdir':
-        if not pathlib.Path(pathdir[directory]).is_dir():
-            try:
-                pathlib.Path(pathdir[directory]).mkdir()
-            except OSError as error:
-                if error.errno == errno.EPERM or error.errno == errno.EACCES:
-                    logger.critical(f'Got error while making directory: \'{error.strerror}: {error.filename}\'.')
-                    logger.critical('Daemon is intended to be run as sudo/root.')
-                    sys.exit(1)
-                else:
-                    logger.critical(f'Got unexcept error while making directory: \'{error}\'.')
-                    sys.exit(1)
-        
     # Init dbus service
     dbusloop = GLib.MainLoop()
     dbus_session = SystemBus()
                    
-
     # Init git watcher first so we can get pull (external) running status
-    mygitwatcher = GitWatcher(pathdir, runlevel, logger.level, args.repo, name='Git Watcher Daemon',
-                    daemon=True)
+    mygitwatcher = GitWatcher(pathdir, name='Git Watcher Daemon', daemon=True)
     
     # Init gitmanager object through GitDbus class
-    # Same here: sharing not working
-    mygitmanager = GitDbus(enable=True, interval=args.pull, repo=args.repo, pathdir=pathdir, 
-                            runlevel=runlevel, loglevel=logger.level)
+    mygitmanager = GitDbus(interval=args.pull, pathdir=pathdir)
             
     # Get running kernel
     mygitmanager.get_running_kernel()
@@ -210,8 +234,7 @@ def main():
     mygitmanager.get_available_update('kernel')
     mygitmanager.get_branch('all')
     mygitmanager.get_available_update('branch')
-    
-    
+        
     # Adding objects to manager
     mygit = { }
     mygit['manager'] = mygitmanager
@@ -234,44 +257,104 @@ def main():
     
 if __name__ == '__main__':
 
-    # Parse arguments
+    # Ok so first parse argvs
     myargsparser = DaemonParserHandler(pathdir, __version__)
     args = myargsparser.parsing()
-        
-    # Creating log
-    mainlog = MainLoggingHandler('::main::', pathdir['prog_name'], pathdir['debuglog'], pathdir['fdlog'])
     
-    if sys.stdout.isatty():
-        logger = mainlog.tty_run()      # create logger tty_run()
-        logger.setLevel(mainlog.logging.INFO)
-        runlevel = 'tty_run'
-        display_init_tty = ''
-        # This is not working with konsole (kde)
-        # TODO
-        print('\33]0; {0} - {1}  \a'.format(prog_name, __version__), end='', flush=True)
+    # Add repo to pathdid
+    pathdir['repo'] = args.repo
+    
+    # Check or create basedir and logdir directories
+    # Print to stderr as we have a redirect for init run 
+    for directory in 'basedir', 'logdir':
+        if not pathlib.Path(pathdir[directory]).is_dir():
+            try:
+                pathlib.Path(pathdir[directory]).mkdir()
+            except OSError as error:
+                if error.errno == errno.EPERM or error.errno == errno.EACCES:
+                    print('Got error while making directory:' 
+                          + f' \'{error.strerror}: {error.filename}\'.', file=sys.stderr)
+                    print('Daemon is intended to be run as sudo/root.', file=sys.stderr)
+                else:
+                    print('Got unexcept error while making directory:' 
+                          + f' \'{error}\'.', file=sys.stderr)
+            print('Exiting with status \'1\'.', file=sys.stderr)
+            sys.exit(1)
+    
+    # Now re-configure logging
+    if sys.stdout.isatty() and not args.fakeinit:
+        # configure the root logger
+        logger = logging.getLogger()
+        # Rename root logger
+        logger.root.name = f'{__name__}'
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(LogLevelFormatter())
+        logger.addHandler(console_handler)
+        # Default to info
+        logger.setLevel(logging.INFO)
+        # Working with xfce4-terminal and konsole if set to '%w'
+        print(f'\33]0;{prog_name} - version: {__version__}\a', end='', flush=True)
     else:
-        logger = mainlog.init_run()     # create logger init_run()
-        logger.setLevel(mainlog.logging.INFO)
-        runlevel = 'init_run'
-        display_init_tty = 'Log are located to {0}'.format(pathdir['debuglog'])
-        # TODO rewrite / change 
-        # Redirect stderr to log 
-        # For the moment maybe stdout as well but nothing should be print to...
-        # This is NOT good if there is error before log(ger) is initialized...
+        # Reconfigure root logger only at the end 
+        # this will keep logging error to syslog
+        # Add debug handler only if debug is enable
+        handlers = { }
+        if args.debug and not args.quiet:
+            # Ok so it's 5MB each, rotate 3 times = 15MB TEST
+            debug_handler = logging.handlers.RotatingFileHandler(pathdir['debuglog'], maxBytes=5242880, backupCount=3)
+            debug_formatter   = logging.Formatter('%(asctime)s  %(name)s  %(message)s')
+            debug_handler.setFormatter(debug_formatter)
+            # For a better debugging get all level message to debug
+            debug_handler.addFilter(LogLevelFilter(50))
+            debug_handler.setLevel(10)
+            handlers['debug'] = debug_handler
+                
+        # Other level goes to Syslog
+        syslog_handler   = logging.handlers.SysLogHandler(address='/dev/log',facility='daemon')
+        syslog_formatter = logging.Formatter('{0} %(levelname)s  %(message)s'.format(prog_name))
+        syslog_handler.setFormatter(syslog_formatter)
+        # Filter stderr output
+        syslog_handler.addFilter(LogErrorFilter(stderr=False))
+        syslog_handler.setLevel(20)
+        handlers['syslog'] = syslog_handler
+        
+        # Catch file descriptor stderr
+        # Same here 5MB, rotate 3x = 15MB
+        fd_handler = logging.handlers.RotatingFileHandler(pathdir['fdlog'], maxBytes=5242880, backupCount=3)
+        fd_formatter   = logging.Formatter('%(asctime)s  %(message)s') #, datefmt)
+        fd_handler.setFormatter(fd_formatter)
+        fd_handler.addFilter(LogErrorFilter(stderr=True))
+        # Level is error : See class LogErrorFilter
+        fd_handler.setLevel(40)
+        handlers['fd'] = fd_handler
+        
+        # reconfigure the root logger
+        logger = logging.getLogger()
+        # Rename root logger
+        logger.root.name = f'{__name__}'
+        # Add handlers
+        for handler in handlers.values():
+            logger.addHandler(handler)
+        # Set log level
+        logger.setLevel(logging.INFO)
+        # redirect again but now not to syslog but to file ;)
+        # First remove root_logger handler otherwise it will still send message to syslog
+        root_logger.removeHandler(fd_handler_syslog)
         fd2 = RedirectFdToLogger(logger)
         sys.stderr = fd2
-       
-    if args.debug and args.quiet or args.quiet and args.debug:
-        logger.info('Both debug and quiet opts has been enable, falling back to log level info.')
-        logger.setLevel(mainlog.logging.INFO)
+    
+    # default level is INFO
+    if args.debug and args.quiet:
+        logger.info('Both debug and quiet opts has been enable,' 
+                    + ' falling back to log level info.')
     elif args.debug:
-        logger.setLevel(mainlog.logging.DEBUG)
+        logger.setLevel(logging.DEBUG)
         logger.info(f'Debug has been enable. {display_init_tty}')
         logger.debug('Message are from this form \'::module::class::method:: msg\'.')
     elif args.quiet:
-        logger.setLevel(mainlog.logging.ERROR)
+        logger.setLevel(logging.ERROR)
     
-    if sys.stdout.isatty():
+    if sys.stdout.isatty() and not args.fakeinit:
         logger.info('Interactive mode detected, all logs go to terminal.')
     
     # run MAIN
