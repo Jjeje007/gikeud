@@ -51,7 +51,7 @@ class StateInfo:
         # Load factory opts
         self.stateopts = kwargs['stateopts']
         # For dry run
-        self.dryrun = kwargs.get(dryrun, False)
+        self.dryrun = kwargs.get('dryrun', False)
         # Re(s) for search over option
         # so normal_opt match everything except line starting with '#'
         self.normal_opt = re.compile(r'^(?!#)(.*):\s(.*)$')

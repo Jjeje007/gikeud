@@ -103,7 +103,7 @@ class GitHandler:
         
         
         # Init save/load info file 
-        self.stateinfo = StateInfo(self.pathdir, default_stateopts)
+        self.stateinfo = StateInfo(pathdir=self.pathdir, stateopts=default_stateopts)
         if self.stateinfo.newfile:
             # Don't need to load from StateInfo as it just create file and
             # add default_stateopts from here
