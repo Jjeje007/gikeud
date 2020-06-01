@@ -99,7 +99,7 @@ def reset_pull_error(myobject, machine):
 
 def parser(args):
     """Parser for git implentation"""
-    myobject  = bus.get("net.syuppod.Manager.Git")
+    myobject  = bus.get("net.gikeud.Manager.Git")
     gitcaller = {
         'available'  :   { 'func' : available_version, 'args' : [myobject, args.available, args.machine]},
         'reset'      :   { 'func' : reset_pull_error, 'args' : [myobject, args.machine ] }
