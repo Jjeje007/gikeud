@@ -241,7 +241,7 @@ def main():
     mygit['watcher'] = mygitwatcher
         
     # Adding dbus publisher
-    dbus_session.publish('net.syuppod.Manager.Git', mygitmanager)
+    dbus_session.publish('net.gikeud.Manager.Git', mygitmanager)
         
     # Init thread
     daemon_thread = MainDaemon(mygit, name='Main Daemon Thread', daemon=True)
