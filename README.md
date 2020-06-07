@@ -25,6 +25,7 @@ whatever program (as long as it use dbus or gikeud-cli output).
 * [GitPython](https://github.com/gitpython-developers/GitPython)
 * [inotify_simple](https://github.com/chrisjbillington/inotify_simple)
 
+For **pydbus** and **inotify_simple** ebuilds can be found in [Jjeje007-overlay](https://github.com/Jjeje007/Jjeje007-overlay).
 
 ## Installation / Usage
 
