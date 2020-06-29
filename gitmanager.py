@@ -490,7 +490,7 @@ class GitHandler:
             versionlist.sort(key=StrictVersion)
                                                                     # origin: local or remote
             if self._compare_multidirect(self.branch['all'][origin], versionlist, f'{origin} branch'):
-                logger.debug('Adding to the list: {0}.'.format(' '.join(self.branch['all'][origin])))
+                logger.debug('Adding to the list: {0}.'.format(' '.join(versionlist)))
                 self.branch['all'][origin] = versionlist
             
                 # Add tosave
